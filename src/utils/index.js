@@ -1,3 +1,6 @@
+
+import { Notify } from 'vant';
+
 export function getUrlCode() { // 截取url中的code方法
     var url = location.search
     // this.winUrl = url
@@ -10,4 +13,11 @@ export function getUrlCode() { // 截取url中的code方法
         }
     }
     return theRequest
+}
+
+export function checkPhone(phone) {
+    if (!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(phone))) {
+        Notify({ type: "warning", message: "手机号码有误，请重填" });
+        return false;
+    }
 }

@@ -56,10 +56,10 @@
       </div>
 
       <div class="remind">
-        <div>
+        <div @click="showDialog = 'code'">
           <div class="red_tip" v-show="first_login"></div>
-          <img src="@/assets/v2_qkax0u.png" />
-          <div>
+          <img src="@/assets/v2_qkax0u.png" />开启消息通知
+          <!-- <div>
             <wx-open-launch-weapp
               id="launch-btn"
               username="gh_a890d79ff3bc"
@@ -84,9 +84,8 @@
                 <button class="btn">开启消息通知</button>
               </script>
             </wx-open-launch-weapp>
-          </div>
+          </div> -->
         </div>
-        <div><img src="@/assets/v2_qkceif.png" /></div>
       </div>
 
       <div class="panel">
@@ -98,6 +97,40 @@
             </div>
             <div class="img"><img src="@/assets/v2_qkax75.png" /></div>
           </div>
+
+          <div @click="$router.push('/howAsk')">
+            <div class="text">
+              向好友提问
+              <span>ask somebody</span>
+            </div>
+            <div class="img"><img src="@/assets/v2_qmij1w.png" /></div>
+          </div>
+
+          <div>
+            <a href="http://nim.lodidc.cn/friendtest/">
+              <div class="text">
+                默契问答
+                <span>Tacit</span>
+              </div>
+              <div class="img"><img src="@/assets/v2_qlcecg.png" /></div>
+            </a>
+          </div>
+        </div>
+
+        <div class="right">
+          <div @click="$router.push('/Record')">
+            <div class="text">
+              谁看过我 {{ userInfo.visit_num }}
+              <div>
+                <img
+                  style="height: 20px; width: 30px"
+                  src="@/assets/v2_ql0ir0.png"
+                />
+              </div>
+            </div>
+            <div class="img"><img src="@/assets/v2_qkayg6.png" /></div>
+          </div>
+
           <div @click="$router.push('/recycle')">
             <div class="text">
               回收站
@@ -105,19 +138,7 @@
             </div>
             <div class="img"><img src="@/assets/v2_qkayjn.png" /></div>
           </div>
-        </div>
-        <div class="right">
-          <div
-            @click="
-              userInfo.is_lock ? (showDialog = true) : $router.push('/Record')
-            "
-          >
-            <div class="text">
-              谁看过我 {{ userInfo.visite_num }}
-              <span>Visitor</span>
-            </div>
-            <div class="img"><img src="@/assets/v2_qkayg6.png" /></div>
-          </div>
+
           <div @click="$router.push('/BlackList')">
             <div class="text">
               黑名单
@@ -125,17 +146,67 @@
             </div>
             <div class="img"><img src="@/assets/v2_qkayox.png" /></div>
           </div>
-          <div>
-            <div class="text">
-              默契问答
-              <span>Blacklist</span>
+
+          <div class="question">
+            <div
+              style="
+                width: 190px;
+                height: 53px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 998;
+              "
+            >
+              <wx-open-launch-weapp
+                id="launch-btn"
+                username="gh_a890d79ff3bc"
+                path="pages/web_view/web_view.html?url=https://mp.weixin.qq.com/s/_ra_ftuFDiV0Oim64720VQ"
+              >
+                <script type="text/wxtag-template">
+                          <style>
+                           .btn {
+                              border:0;
+                              font-size: 14px;
+                              background:#f7f7f7;
+                              text-align:left;
+                              color:#2c3e50;
+                              width: 160px;
+                              padding: 20px 15px;
+                              height: 13px;
+                              border-radius: 8px;
+                           }
+                           .text{
+                             font-size: 15px;
+                              font-weight: bold;
+                           }
+                          </style>
+                  <div class="btn">
+                    <div class="text">
+                      常见问题
+                    </div>
+                  </div>
+                </script>
+              </wx-open-launch-weapp>
             </div>
-            <div class="img"><img src="@/assets/v2_qlcecg.png" /></div>
+            <div class="img"><img src="@/assets/v2_qmk1ql.png" /></div>
           </div>
         </div>
       </div>
     </div>
-    <div class="dialog" @click="showDialog = false" v-show="showDialog">
+
+    <div
+      class="dialog codeDialog"
+      @click="showDialog = ''"
+      v-show="showDialog === 'code'"
+    >
+      <div class="code">
+        <img src="@/assets/20210121172140.png" />
+      </div>
+      <div>长按关注即可开启通知<br />若已关注无须重复操作</div>
+    </div>
+
+    <div class="dialog" @click="showDialog = ''" v-show="showDialog === 'pay'">
       <div class="content" @click.stop="">
         <div>谁看过我</div>
         <div class="operation_container">
@@ -193,7 +264,7 @@ import {
 export default {
   data() {
     return {
-      showDialog: false,
+      showDialog: "",
       userInfo: {},
       appId: "",
       isFocus: false,
@@ -283,13 +354,17 @@ export default {
             timestamp: res.data.timestamp,
             nonceStr: res.data.nonceStr,
             signature: res.data.signature,
-            jsApiList: ["chooseWXPay", "updateTimelineShareData","hideMenuItems"],
+            jsApiList: [
+              "chooseWXPay",
+              "updateTimelineShareData",
+              "hideMenuItems",
+            ],
             openTagList: ["wx-open-launch-weapp"],
           });
         wx.ready(function () {
           console.log("成功隐藏");
           wx.hideMenuItems({
-            menuList: ["menuItem:share:appMessage"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
           });
           // wx.updateTimelineShareData({
           //   title: "分享", // 分享标题
@@ -344,7 +419,7 @@ export default {
             flag: data.body,
             session: localStorage.getItem("question_session"),
           });
-          that.showDialog = false;
+          that.showDialog = "";
           that.getUserInfo();
           this.$Dialog
             .alert({
@@ -363,6 +438,7 @@ export default {
 
 <style lang="less" scoped>
 .mine {
+  padding-bottom: 20px;
   .vanDialog {
     .dialog_input {
       width: 80%;
@@ -371,7 +447,11 @@ export default {
       line-height: 40px;
     }
   }
-
+  .codeDialog {
+    display: flex;
+    flex-direction: column;
+    color: white;
+  }
   .dialog {
     background: rgba(0, 0, 0, 0.65);
     position: fixed;
@@ -383,6 +463,17 @@ export default {
     justify-content: center;
     align-items: center;
     padding: 0 35px;
+    & > .code {
+      height: 175px;
+      width: 175px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
     & > .content {
       background: white;
       border-radius: 10px;
@@ -572,6 +663,9 @@ export default {
       margin-top: 10px;
       display: flex;
       .left {
+        a {
+          color: #2c3e50;
+        }
         width: 135px;
         margin-right: 10px;
         & > div {
@@ -584,8 +678,21 @@ export default {
           height: 95px;
         }
         & > div:nth-child(2) {
-          height: 90px;
+          height: 95px;
           margin-top: 10px;
+          & > .img {
+            height: 35px;
+            width: 35px;
+          }
+        }
+
+        & > div:nth-child(3) {
+          height: 25px;
+          margin-top: 8px;
+          & > .img {
+            height: 29px;
+            width: 29px;
+          }
         }
         & .text {
           font-size: 15px;
@@ -608,6 +715,13 @@ export default {
       }
       .right {
         flex: 1;
+        & > .question {
+          position: relative;
+          &>.img{
+            z-index: 999;
+
+          }
+        }
         & > div {
           background-color: rgba(247, 247, 247, 100);
           border-radius: 8px;
@@ -615,10 +729,10 @@ export default {
           position: relative;
         }
         & > div:nth-child(1) {
-          height: 75px;
+          height: 80px;
         }
         & > div:nth-child(2) {
-          height: 40px;
+          height: 35px;
           margin-top: 10px;
           & > .img {
             right: 20px;
@@ -630,18 +744,32 @@ export default {
           }
         }
         & > div:nth-child(3) {
-          height: 60px;
+          height: 35px;
           margin-top: 10px;
-          padding: 0;
-          & > .text {
-            padding: 15px;
-          }
+          // & > .text {
+          //   padding: 15px;
+          // }
           & > .img {
             right: 17px;
             top: 20px;
             img {
               height: 25px;
               width: 25px;
+            }
+          }
+        }
+        & > div:nth-child(4) {
+          height: 13px;
+          margin-top: 10px;
+          // & > .text {
+          //   padding: 15px;
+          // }
+          & > .img {
+            right: 17px;
+            top: 20px;
+            img {
+              height: 21px;
+              width: 21px;
             }
           }
         }

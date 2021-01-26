@@ -24,14 +24,13 @@
       <div>抱歉，对方拒绝接受您的提问</div>
     </div>
 
-    <div
-      class="dialog"
-      v-show="showDialog"
-      @click="(showDialog = false), $router.go(-1)"
-    >
-      <img src="@/assets/v2_qlcewq.png" />
-      <div style="margin-bottom: 65px">发送成功</div>
-      <div @click.stop="">
+    <div class="dialog" v-show="showDialog" @click="(showDialog = false), $router.go(-1)">
+      <div class="success"><img src="@/assets/v2_qkb8j3.png" />发送成功</div>
+      <img src="@/assets/20210121172140.png" />
+      <div>长按关注，开启回复通知</div>
+      <!-- <img src="@/assets/v2_qlcewq.png" /> -->
+      <!-- <div style="margin-bottom: 65px">发送成功</div> -->
+      <!-- <div @click.stop="">
         <wx-open-launch-weapp
           id="launch-btn"
           username="gh_a890d79ff3bc"
@@ -54,7 +53,7 @@
             <button class="btn">ta回答时通知我</button>
           </script>
         </wx-open-launch-weapp>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -82,7 +81,7 @@ export default {
     const res = await judgeBlock(data);
     this.islock = res.data.is_block;
     this.getUseInfo();
-    this.getWxConfig();
+    // this.getWxConfig();
   },
 
   methods: {
@@ -138,6 +137,7 @@ export default {
         const res = await postAsk(data);
         if (res.err_code === 0) {
           this.showDialog = true;
+          this.content = "";
         }
       }
     },
@@ -156,15 +156,32 @@ export default {
     top: 0;
     background: rgba(0, 0, 0, 0.65);
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
-    color: rgba(249, 213, 126, 100);
-    font-size: 13px;
-    img {
-      height: 65px;
-      width: 65px;
+    color: white;
+    font-size: 12px;
+    & > img {
+      height: 125px;
+      width: 125px;
       margin-bottom: 10px;
+    }
+    .success {
+      margin: 20px 0 156px;
+      width: 335px;
+      height: 50px;
+      border-radius: 6px;
+      background-color: rgba(249, 213, 126, 100);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: black;
+      img {
+        display: inline-block;
+        height: 21px;
+        width: 21px;
+        margin-right: 5px;
+      }
     }
   }
   .header {

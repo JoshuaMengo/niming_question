@@ -3,16 +3,20 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import 'lib-flexible/flexible'
-import { Checkbox,Field, CheckboxGroup, Uploader, Notify, Dialog,List } from 'vant';
+import { Checkbox,Field,Loading, Button ,CheckboxGroup, Uploader, Notify, Dialog,List } from 'vant';
 Vue.config.productionTip = false
 Vue.use(Field);
 Vue.use(Dialog);
 
-
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
+Vue.use(Button);
 Vue.use(Checkbox);
 Vue.use(CheckboxGroup);
 Vue.use(Uploader);
 Vue.use(List);
+Vue.use(Loading);
+
 
 Vue.prototype.$Dialog = Dialog
 Vue.prototype.$Notify = Notify

@@ -76,7 +76,7 @@
         @click="
           $router.push({
             path: '/QuestionBox',
-            query: { id: detailData.user.uid },
+            query: { id: detailData.to_uid },
           })
         "
       >
@@ -186,7 +186,7 @@ export default {
       }
       //非静默授权
       var url = encodeURIComponent(window.location.href);
-      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd817698fa2b73670&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfc6cc44785e79f4a&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
       window.location.href = getCodeUrl;
     } else {
       // 已经有session,用localstorage的session来请求 别的业务逻辑
@@ -259,7 +259,7 @@ export default {
           });
         wx.ready(function () {
           wx.hideMenuItems({
-            menuList: ["menuItem:share:appMessage"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            menuList: ["menuItem:share:appMessage","menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
           });
           console.log("成功");
           wx.updateTimelineShareData({
@@ -333,7 +333,7 @@ export default {
       let data = {
         session: localStorage.getItem("question_session"),
         qid: this.qid,
-        is_to_hidden: this.isHideen == 1 ? true : false,
+        is_to_hidden: this.isHidden == 1 ? true : false,
       };
       const res = await deleteQuestion(data);
       if (res.err_code === 0) {

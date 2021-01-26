@@ -35,7 +35,7 @@
 
 <script>
 import QRCode from "qrcodejs2";
-import { getDetail } from "@/api/api";
+import { getDetail,getUser } from "@/api/api";
 import html2canvas from "html2canvas";
 export default {
   name: "poster",

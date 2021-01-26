@@ -1,15 +1,15 @@
 <template>
-  <div class="home">
+  <div class="home" @click.stop="showDialog = true">
     <!-- 头部分享，tabbar -->
     <div class="header">
       <div class="top">
         <div><img src="@/assets/v2_qkaufe.png" /></div>
         <div>
-          <div @click="$router.push('/Mine')">
+          <div>
             我的
-            <div class="avatarBox">
+            <!-- <div class="avatarBox">
               <img :src="userInfo ? userInfo.avatarUrl : ''" />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -20,7 +20,6 @@
           :class="
             $store.state.activeTabbarIndex === index ? 'activeTabbar' : ''
           "
-          @click="changeIndex(index, item)"
         >
           {{ item.name }}
         </div>
@@ -28,76 +27,68 @@
     </div>
 
     <div class="container" v-if="list.length > 0">
-      <van-list
+      <!-- <van-list
         v-model="loading"
         :finished="finished"
         finished-text="没有更多了"
         @load="onLoad"
-      >
+      > -->
+      <div class="item" v-for="(item, index) in list" :key="index">
         <div
-          class="item"
-          v-for="(item, index) in list"
-          :key="index"
-          @click="
-            $router.push({
-              path: '/Detail',
-              query: {
-                qid: item.qid,
-                isHidden:
-                  $store.state.activeTabbarIndex === 0 ||
-                  $store.state.activeTabbarIndex === 1
-                    ? 1
-                    : 2,
-              },
-            })
+          class="red"
+          v-show="
+            ($store.state.activeTabbarIndex === 0 && !item.from_have_read) ||
+            ($store.state.activeTabbarIndex === 2 && !item.to_have_read)
+          "
+        ></div>
+        <div
+          class="title"
+          v-if="
+            $store.state.activeTabbarIndex === 2 ||
+            $store.state.activeTabbarIndex === 3
           "
         >
-          <div
-            class="red"
-            v-show="
-              ($store.state.activeTabbarIndex === 0 && !item.from_have_read) ||
-              ($store.state.activeTabbarIndex === 2 && !item.to_have_read)
-            "
-          ></div>
-          <div class="title" v-if="$store.state.activeTabbarIndex === 2 || $store.state.activeTabbarIndex === 3">
-            <span>向</span>
-            <img :src="item.user ? item.user.avatarUrl : ''" />
-            <span>{{ item.user ? item.user.nickName : "" }}{{ item.is_open? '' :'匿名' }}提问</span>
-          </div>
-          <div class="title" v-else>
-            {{ item.is_open ? item.user.nickName : "匿名" }}提问
-          </div>
+          <span>向</span>
+          <img :src="item.user ? item.user.avatarUrl : ''" />
+          <span
+            >{{ item.user ? item.user.nickName : ""
+            }}{{ item.is_open ? "" : "匿名" }}提问</span
+          >
+        </div>
+        <div class="title" v-else>
+          {{ item.user ? item.user.nickName : "匿名" }}提问
+        </div>
 
-          <div class="content">{{ item.text }}</div>
-          <!-- <div class="status">未回答</div> -->
-          <div class="status" v-if="$store.state.activeTabbarIndex === 0">
-            <div class="haveAnswer" v-if="item.have_answer">
-              <span>答</span>{{ item.answer }}
-            </div>
-            <div v-else class="noAnswer">
-              <div>未回答</div>
-              <div>去回答</div>
-            </div>
+        <div class="content">{{ item.text }}</div>
+        <!-- <div class="status">未回答</div> -->
+        <div class="status" v-if="$store.state.activeTabbarIndex === 0">
+          <div class="haveAnswer" v-if="item.have_answer">
+            <span>答</span>{{ item.answer }}
           </div>
-
-          <div class="status" v-if="$store.state.activeTabbarIndex === 1">
-            <div class="haveAnswer"><span>答</span>{{ item.answer }}</div>
-          </div>
-
-          <div class="status" v-if="$store.state.activeTabbarIndex === 2">
-            <div class="haveAnswer" v-if="item.have_answer">
-              <span>答</span>{{ item.answer ? item.answer : "" }}
-            </div>
-            <div class="noAnswer" v-else>
-              <div>未收到回答</div>
-            </div>
-          </div>
-
-          <div class="status" v-if="$store.state.activeTabbarIndex === 3">
-            <div class="haveAnswer"><span>答</span>{{ item.answer }}</div>
+          <div v-else class="noAnswer">
+            <div>未回答</div>
+            <div>去回答</div>
           </div>
         </div>
-      </van-list>
+
+        <div class="status" v-if="$store.state.activeTabbarIndex === 1">
+          <div class="haveAnswer"><span>答</span>{{ item.answer }}</div>
+        </div>
+
+        <div class="status" v-if="$store.state.activeTabbarIndex === 2">
+          <div class="haveAnswer" v-if="item.have_answer">
+            <span>答</span>{{ item.answer ? item.answer : "" }}
+          </div>
+          <div class="noAnswer" v-else>
+            <div>未收到回答</div>
+          </div>
+        </div>
+
+        <div class="status" v-if="$store.state.activeTabbarIndex === 3">
+          <div class="haveAnswer"><span>答</span>{{ item.answer }}</div>
+        </div>
+      </div>
+      <!-- </van-list> -->
     </div>
 
     <div class="nothing" v-else>
@@ -106,7 +97,7 @@
 
     <!-- 底部分享按钮 -->
     <div class="footerBtn">
-      <div :class="closeShare ? 'closeShare' : ''" @click="$router.push('/newPoster')">
+      <div :class="closeShare ? 'closeShare' : ''" @click="showDialog = 'code'">
         <img @click.stop="closeShare = false" src="@/assets/v2_qkceif.png" />
         <div
           :style="
@@ -128,11 +119,15 @@
       </div>
     </div>
 
-    <div class="dialog codeDialog" @click="showDialog = ''" v-show="showDialog ==='code'">
+    <div
+      class="dialog codeDialog"
+      @click="showDialog = ''"
+      v-show="showDialog === 'code'"
+    >
       <div class="code" @click.stop="">
         <img src="@/assets/v2_qmescr.jpg" />
       </div>
-      <div>长按关注即可开启通知<br/>若已关注无须重复操作</div>
+      <div>长按关注即可开启通知<br />若已关注无须重复操作</div>
     </div>
 
     <!-- <div class="dialog" v-show="showDialog == 'tip'" @click="showTip = ''">
@@ -145,12 +140,40 @@
     <div class="shareTips_Dialog"></div>
 
     <!-- 入场加载动画 -->
-    <div class="loading" v-show="$store.state.showLoading">
+    <!-- <div class="loading" v-show="$store.state.showLoading">
       <div>
         <img src="@/assets/v2_qkyqr7.gif" />
       </div>
       <div>
         <img src="@/assets/v2_qkaufe.png" />
+      </div>
+    </div> -->
+
+    <div class="dialog" @click.stop="showDialog = false" v-show="showDialog">
+      <div class="content" @click.stop="">
+        <div>请在微信中打开</div>
+        <div class="item">
+          <div class="title">方式一 <br />保存下方二维码，扫码进入</div>
+          <img src="@/assets/v2_qmi97e.png" />
+        </div>
+        <div class="item">
+          <div class="title">方式二 <br />保存下方二维码，扫码进入</div>
+          <div class="link">
+            <span ref="copyContainer"
+              >http://anonymous.taodaibuy.com/niming_question</span
+            >
+          </div>
+          <div
+            @click="onCopy"
+            style="color: #3e7dff; font-size: 14px; text-align: center"
+          >
+            一键复制
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="title">方式三 <br />搜索公众号“朋友提问箱Pro”获取入口</div>
+        </div>
       </div>
     </div>
   </div>
@@ -182,83 +205,99 @@ export default {
         { name: "收到的回答", type: "recevieA" },
       ],
       activeTabbarIndex: 0,
-      list: [],
+      list: [
+        {
+          text: "假设你有3次实现新年愿望的机会，你会用来实现什么愿望？",
+          user: {
+            nickName: "官方",
+          },
+        },
+      ],
       closeShare: false,
       tabbarType: "recevieQ",
       loading: false,
       finished: false,
       page_index: 0,
-      showDialog: '',
+      // showDialog: "",
+      showDialog: false,
     };
   },
 
-  async mounted() {
-    //获取路由中的code
-    //如果没有路由中没有code，localstorage中也没有session，就进行非静默授权，在路由拦截进行请求
-    // let session = localStorage.getItem("question_session");
-    let that = this;
-    let code = that.getUrlCode().code;
-    if (
-      !localStorage.getItem("question_session") ||
-      localStorage.getItem("question_session") === undefined
-    ) {
-      //已经通过非静默授权重定向过来
-      if (code) {
-        login(code).then(async (result) => {
-          //设置uid和session到localstorage并用返回到的session继续请求
-          localStorage.setItem("question_session", result.data.session);
-          localStorage.setItem("question_uid", result.data.uid);
-          localStorage.setItem("first_login", result.data.first_login);
-          if (that.$store.state.showLoading) {
-            setTimeout(() => {
-              that.getDataList(
-                that.tabbarList[that.$store.state.activeTabbarIndex].type,
-                result.data.session
-              );
-              that.$store.commit("changeShowLoading");
-            }, 1000);
-          } else {
-            that.getDataList(
-              that.tabbarList[that.$store.state.activeTabbarIndex].type,
-              result.data.session
-            );
-          }
-          await that.getUserInfo(result.data.session);
+  // async mounted() {
+  //   //获取路由中的code
+  //   //如果没有路由中没有code，localstorage中也没有session，就进行非静默授权，在路由拦截进行请求
+  //   // let session = localStorage.getItem("question_session");
+  //   let that = this;
+  //   let code = that.getUrlCode().code;
+  //   if (
+  //     !localStorage.getItem("question_session") ||
+  //     localStorage.getItem("question_session") === undefined
+  //   ) {
+  //     //已经通过非静默授权重定向过来
+  //     if (code) {
+  //       login(code).then(async (result) => {
+  //         //设置uid和session到localstorage并用返回到的session继续请求
+  //         localStorage.setItem("question_session", result.data.session);
+  //         localStorage.setItem("question_uid", result.data.uid);
+  //         localStorage.setItem("first_login", result.data.first_login);
+  //         if (that.$store.state.showLoading) {
+  //           setTimeout(() => {
+  //             that.getDataList(
+  //               that.tabbarList[that.$store.state.activeTabbarIndex].type,
+  //               result.data.session
+  //             );
+  //             that.$store.commit("changeShowLoading");
+  //           }, 1000);
+  //         } else {
+  //           that.getDataList(
+  //             that.tabbarList[that.$store.state.activeTabbarIndex].type,
+  //             result.data.session
+  //           );
+  //         }
+  //         await that.getUserInfo(result.data.session);
 
-          that.getWxConfig(result.data.session);
-        });
-        return; //return掉 不再走授权
-      }
-      //非静默授权
-      var url = encodeURIComponent(window.location.href);
-      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfc6cc44785e79f4a&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
-      window.location.href = getCodeUrl;
-    } else {
-      // 别的业务逻辑
-      if (that.$store.state.showLoading) {
-        setTimeout(() => {
-          that.getDataList(
-            that.tabbarList[that.$store.state.activeTabbarIndex].type,
-            localStorage.getItem("question_session")
-          );
-          that.$store.commit("changeShowLoading");
-        }, 1000);
-      } else {
-        that.getDataList(
-          that.tabbarList[that.$store.state.activeTabbarIndex].type,
-          localStorage.getItem("question_session")
-        );
-      }
-      await that.getUserInfo(localStorage.getItem("question_session"));
-      that.getWxConfig(localStorage.getItem("question_session"));
-    }
-  },
+  //         that.getWxConfig(result.data.session);
+  //       });
+  //       return; //return掉 不再走授权
+  //     }
+  //     //非静默授权
+  //     var url = encodeURIComponent(window.location.href);
+  //     var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd817698fa2b73670&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+  //     window.location.href = getCodeUrl;
+  //   } else {
+  //     // 别的业务逻辑
+  //     if (that.$store.state.showLoading) {
+  //       setTimeout(() => {
+  //         that.getDataList(
+  //           that.tabbarList[that.$store.state.activeTabbarIndex].type,
+  //           localStorage.getItem("question_session")
+  //         );
+  //         that.$store.commit("changeShowLoading");
+  //       }, 1000);
+  //     } else {
+  //       that.getDataList(
+  //         that.tabbarList[that.$store.state.activeTabbarIndex].type,
+  //         localStorage.getItem("question_session")
+  //       );
+  //     }
+  //     await that.getUserInfo(localStorage.getItem("question_session"));
+  //     that.getWxConfig(localStorage.getItem("question_session"));
+  //   }
+  // },
 
   async created() {
     //根据store的状态判断是否第一次进入，首次进入显示入场动画
   },
 
   methods: {
+    onCopy() {
+      let container = this.$refs.copyContainer;
+      this.$copyText(
+        "http://anonymous.taodaibuy.com/niming_question",
+        container
+      );
+      this.$Notify({ type: "success", message: "复制成功" });
+    },
     async getUserInfo(session) {
       const res = await getUser(session);
       this.userInfo = res.data;
@@ -290,7 +329,7 @@ export default {
         wx.ready(function () {
           console.log("成功");
           wx.hideMenuItems({
-            menuList: ["menuItem:share:appMessage","menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
           });
           wx.updateTimelineShareData({
             title:
@@ -365,34 +404,34 @@ export default {
     },
 
     // van-list的上拉加载
-    async onLoad() {
-      let res;
-      let data = {
-        session: localStorage.getItem("question_session"),
-        page_index: this.page_index + 1,
-      };
-      switch (this.tabbarList[this.$store.state.activeTabbarIndex].type) {
-        case "recevieQ":
-          res = await getReceiveQuestion(data);
-          break;
-        case "sendA":
-          res = await querySendAnswer(data);
-          break;
-        case "sendQ":
-          res = await querySendQuestion(data);
-          break;
-        case "recevieA":
-          res = await queryReceiveAnswer(data);
-          break;
-      }
-      this.page_index = this.page_index + 1;
-      this.loading = false;
-      if (res.data.list.length <= 0) {
-        this.finished = true;
-      } else {
-        this.list.push(...res.data.list);
-      }
-    },
+    // async onLoad() {
+    //   let res;
+    //   let data = {
+    //     session: localStorage.getItem("question_session"),
+    //     page_index: this.page_index + 1,
+    //   };
+    //   switch (this.tabbarList[this.$store.state.activeTabbarIndex].type) {
+    //     case "recevieQ":
+    //       res = await getReceiveQuestion(data);
+    //       break;
+    //     case "sendA":
+    //       res = await querySendAnswer(data);
+    //       break;
+    //     case "sendQ":
+    //       res = await querySendQuestion(data);
+    //       break;
+    //     case "recevieA":
+    //       res = await queryReceiveAnswer(data);
+    //       break;
+    //   }
+    //   this.page_index = this.page_index + 1;
+    //   this.loading = false;
+    //   if (res.data.list.length <= 0) {
+    //     this.finished = true;
+    //   } else {
+    //     this.list.push(...res.data.list);
+    //   }
+    // },
   },
 };
 </script>
@@ -404,11 +443,10 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  .codeDialog{
+  .codeDialog {
     display: flex;
     flex-direction: column;
-    color:white
-     & > .code {
+    color:white & > .code {
       height: 175px;
       width: 175px;
       border-radius: 6px;
@@ -434,7 +472,7 @@ export default {
     color: white;
     font-size: 15px;
     z-index: 999;
-     & > .code {
+    & > .code {
       height: 175px;
       width: 175px;
       border-radius: 6px;
@@ -445,21 +483,47 @@ export default {
         height: 100%;
       }
     }
-    // & > div:nth-child(1) {
-    //   border-radius: 8px;
-    //   width: 75px;
-    //   height: 75px;
-    //   background: white;
-    //   display: flex;
-    //   justify-content: center;
-    //   align-items: center;
-    //   margin-bottom: 20px;
-    //   img {
-    //     width: 35px;
-    //     height: 35px;
-    //   }
-    // }
-  
+    .content {
+      color: black;
+      background: white;
+      width: 305px;
+      height: 511px;
+      border-radius: 10px;
+      & > div:nth-child(1) {
+        font-size: 15px;
+        font-weight: bold;
+        height: 66px;
+        line-height: 66px;
+        text-align: center;
+        border-bottom: 1px solid rgba(244, 245, 245, 100);
+      }
+      & > .item {
+        margin-top: 20px;
+        line-height: 22px;
+        & .title {
+          font-size: 14px;
+          text-align: center;
+          margin-bottom: 15px;
+        }
+        & .link {
+          padding: 10px;
+          width: 235px;
+          background: #f4f5f5;
+          word-break: break-all;
+          color: #3e7dff;
+          border-radius: 5px;
+          margin: 0 auto 5px;
+          overflow: hidden;
+          font-size: 12px;
+        }
+        & img {
+          display: block;
+          margin: 0 auto;
+          height: 105px;
+          width: 105px;
+        }
+      }
+    }
   }
   .header {
     background: white;
@@ -546,19 +610,16 @@ export default {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          margin:0 5px;
+          margin: 0 5px;
         }
       }
       & > .content {
         color: rgba(16, 16, 16, 100);
         font-size: 15px;
         margin: 10px 0 9px;
-        display: -webkit-box;
-        word-break: break-all;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        white-space: nowrap;
         overflow: hidden;
+        text-overflow: ellipsis;
       }
       & > .status {
         border-top: 1px solid rgba(244, 245, 245, 100);

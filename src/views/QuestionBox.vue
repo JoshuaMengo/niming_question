@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <div class="share_btn" @click="showTip = true" v-else>邀请好友提问</div>
+      <div class="share_btn" @click="$router.push('/newPoster')" v-else>邀请好友提问</div>
 
       <div class="questionDetail">
         <div class="title">
@@ -137,7 +137,7 @@ export default {
       }
       //非静默授权
       var url = encodeURIComponent(window.location.href);
-      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd817698fa2b73670&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+      var getCodeUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfc6cc44785e79f4a&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
       window.location.href = getCodeUrl;
     } else {
       // 已经有session,用localstorage的session来请求 别的业务逻辑
@@ -182,7 +182,7 @@ export default {
         wx.ready(function () {
           console.log("成功");
           wx.hideMenuItems({
-            menuList: ["menuItem:share:appMessage"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            menuList: ["menuItem:share:appMessage","menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
           });
           wx.updateTimelineShareData({
             title:

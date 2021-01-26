@@ -386,6 +386,45 @@ export function getUserDetail(data) {
     })
 }
 
+// ## 发送问答
+export function sendMessage(data) {
+    return request({
+        url: '/social/send_message?session=' + data.session,
+        method: 'post',
+        data:{
+            nickName:data.nickName,
+            phone:data.phone,
+            content:data.content,
+            is_open:data.is_open,
+        }
+    })
+}
+
+export function createSnsCode(data) {
+    return request({
+        url: '/social/create_sns_code?session=' + data.session,
+        method: 'post',
+        data:{
+            phone:data.phone
+        }
+    })
+}
+
+
+//绑定手机号码
+export function updatePhone(data) {
+    return request({
+        url: '/user/update_phone?session=' + data.session,
+        method: 'post',
+        data:{
+            phone:data.phone,
+            code:data.code
+        }
+    })
+}
+
+
+
 
 // // 收到的信息列表
 // export function queryReceive(data) {

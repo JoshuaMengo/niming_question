@@ -9,7 +9,7 @@ const path = require('path')
 const name = '' // TODO: get this variable from setting.ts
 
 // const backEndServer = 'http://192.168.1.100:7001'
-const backEndServer = 'http://anonymous.taodaibuy.com/question/'
+const backEndServer = 'http://anonymous.lodidc.cn/question/'
 
 
 module.exports = {
