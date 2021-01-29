@@ -59,10 +59,19 @@
               ($store.state.activeTabbarIndex === 2 && !item.to_have_read)
             "
           ></div>
-          <div class="title" v-if="$store.state.activeTabbarIndex === 2 || $store.state.activeTabbarIndex === 3">
+          <div
+            class="title"
+            v-if="
+              $store.state.activeTabbarIndex === 2 ||
+              $store.state.activeTabbarIndex === 3
+            "
+          >
             <span>向</span>
             <img :src="item.user ? item.user.avatarUrl : ''" />
-            <span>{{ item.user ? item.user.nickName : "" }}{{ item.is_open? '' :'匿名' }}提问</span>
+            <span
+              >{{ item.user ? item.user.nickName : ""
+              }}{{ item.is_open ? "" : "匿名" }}提问</span
+            >
           </div>
           <div class="title" v-else>
             {{ item.is_open ? item.user.nickName : "匿名" }}提问
@@ -106,7 +115,10 @@
 
     <!-- 底部分享按钮 -->
     <div class="footerBtn">
-      <div :class="closeShare ? 'closeShare' : ''" @click="$router.push('/newPoster')">
+      <div
+        :class="closeShare ? 'closeShare' : ''"
+        @click="$router.push('/newPoster')"
+      >
         <img @click.stop="closeShare = false" src="@/assets/v2_qkceif.png" />
         <div
           :style="
@@ -128,11 +140,15 @@
       </div>
     </div>
 
-    <div class="dialog codeDialog" @click="showDialog = ''" v-show="showDialog ==='code'">
+    <div
+      class="dialog codeDialog"
+      @click="showDialog = ''"
+      v-show="showDialog === 'code'"
+    >
       <div class="code" @click.stop="">
         <img src="@/assets/v2_qmescr.jpg" />
       </div>
-      <div>长按关注即可开启通知<br/>若已关注无须重复操作</div>
+      <div>长按关注即可开启通知<br />若已关注无须重复操作</div>
     </div>
 
     <!-- <div class="dialog" v-show="showDialog == 'tip'" @click="showTip = ''">
@@ -151,6 +167,37 @@
       </div>
       <div>
         <img src="@/assets/v2_qkaufe.png" />
+      </div>
+    </div>
+
+    <div class="guide" v-show="isFirst == true">
+      <div class="content">
+        <div class="close" @click="closeDialog()">X</div>
+        <div class="tit">给个机会，问点有意思的</div>
+        <div class="desc">/ 新用户指引 /</div>
+        <div class="item">
+          <div>1、点击页面下方“邀请好友提问”</div>
+          <div>
+            <img
+              style="width: 255px; height: 50px"
+              src="@/assets/v2_qnmjz1.jpg"
+            />
+          </div>
+        </div>
+
+        <div class="item">
+          <div>2、保存海报并分享到朋友圈</div>
+          <div>
+            <img
+              style="width: 255px; height: 188px"
+              src="@/assets/v2_qnmkgk.png"
+            />
+          </div>
+        </div>
+
+        <div class="item">
+          <div>3、坐等好友问你奇葩问题~</div>
+        </div>
       </div>
     </div>
   </div>
@@ -188,7 +235,8 @@ export default {
       loading: false,
       finished: false,
       page_index: 0,
-      showDialog: '',
+      showDialog: "",
+      isFirst: false,
     };
   },
 
@@ -198,17 +246,21 @@ export default {
     // let session = localStorage.getItem("question_session");
     let that = this;
     let code = that.getUrlCode().code;
+    let isnew = that.getUrlCode().isnew;
     if (
       !localStorage.getItem("question_session") ||
       localStorage.getItem("question_session") === undefined
     ) {
       //已经通过非静默授权重定向过来
       if (code) {
-        login(code).then(async (result) => {
+        login({
+          code: code,
+          isNew: isnew ? true : false,
+        }).then(async (result) => {
           //设置uid和session到localstorage并用返回到的session继续请求
           localStorage.setItem("question_session", result.data.session);
           localStorage.setItem("question_uid", result.data.uid);
-          localStorage.setItem("first_login", result.data.first_login);
+          localStorage.setItem("question_first_login", result.data.first_login);
           if (that.$store.state.showLoading) {
             setTimeout(() => {
               that.getDataList(
@@ -216,6 +268,8 @@ export default {
                 result.data.session
               );
               that.$store.commit("changeShowLoading");
+              that.isFirst =
+                localStorage.getItem("question_first_login") === "true" ? true : false;
             }, 1000);
           } else {
             that.getDataList(
@@ -242,6 +296,8 @@ export default {
             localStorage.getItem("question_session")
           );
           that.$store.commit("changeShowLoading");
+          that.isFirst =
+            localStorage.getItem("question_first_login") === "true" ? true : false;
         }, 1000);
       } else {
         that.getDataList(
@@ -254,11 +310,20 @@ export default {
     }
   },
 
-  async created() {
-    //根据store的状态判断是否第一次进入，首次进入显示入场动画
-  },
+  // async created() {
+  //   //根据store的状态判断是否第一次进入，首次进入显示入场动画
+  //   this.isFirst = localStorage.getItem("first_login");
+  //   console.log(this.isFirst);
+  // },
 
   methods: {
+    closeDialog() {
+      if (this.isFirst === true) {
+        localStorage.setItem("question_first_login", false);
+        this.isFirst = false;
+      }
+    },
+
     async getUserInfo(session) {
       const res = await getUser(session);
       this.userInfo = res.data;
@@ -290,7 +355,7 @@ export default {
         wx.ready(function () {
           console.log("成功");
           wx.hideMenuItems({
-            menuList: ["menuItem:share:appMessage","menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            menuList: ["menuItem:share:appMessage", "menuItem:share:timeline"], // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
           });
           wx.updateTimelineShareData({
             title:
@@ -404,11 +469,60 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  .codeDialog{
+  .guide {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & > .content {
+      background: white;
+      width: 305px;
+      height: 490px;
+      border-radius: 10px;
+      position: relative;
+      & > .close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font-size: 15px;
+      }
+      & > .tit {
+        height: 67px;
+        line-height: 67px;
+        text-align: center;
+        color: rgba(16, 16, 16, 100);
+        font-size: 15px;
+        font-weight: bold;
+        border-bottom: 1px solid rgba(244, 245, 245, 100);
+      }
+      & > .desc {
+        color: rgba(249, 213, 127, 100);
+        font-size: 15px;
+        margin: 20px 0 15px;
+        text-align: center;
+      }
+      & > .item {
+        padding: 0 25px;
+        & > div:nth-child(1) {
+          margin-bottom: 10px;
+        }
+        img {
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+  .codeDialog {
     display: flex;
     flex-direction: column;
-    color:white
-     & > .code {
+    color: white;
+    & > .code {
       height: 175px;
       width: 175px;
       border-radius: 6px;
@@ -434,7 +548,7 @@ export default {
     color: white;
     font-size: 15px;
     z-index: 999;
-     & > .code {
+    & > .code {
       height: 175px;
       width: 175px;
       border-radius: 6px;
@@ -459,7 +573,6 @@ export default {
     //     height: 35px;
     //   }
     // }
-  
   }
   .header {
     background: white;
@@ -546,7 +659,7 @@ export default {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          margin:0 5px;
+          margin: 0 5px;
         }
       }
       & > .content {

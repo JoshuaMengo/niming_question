@@ -118,6 +118,8 @@ export default {
 
   async mounted() {
     let code = getUrlCode().code; //返回url中的code
+    let isnew = getUrlCode().isnew;
+
     //localstorage中也没有session 首次进入
     if (
       !localStorage.getItem("question_session") ||
@@ -125,11 +127,14 @@ export default {
     ) {
       //已经通过非静默授权重定向过来
       if (code) {
-        login(code).then(async (result) => {
+        login({
+          code: code,
+          isNew: isnew ? true : false,
+        }).then(async (result) => {
           //设置uid和session到localstorage并用返回到的session继续请求
           localStorage.setItem("question_session", result.data.session);
           localStorage.setItem("question_uid", result.data.uid);
-          localStorage.setItem("first_login", result.data.first_login);
+          localStorage.setItem("question_first_login", result.data.first_login);
           await this.getAnswerList(result.data.session);
           this.getWxConfig(result.data.session);
         });

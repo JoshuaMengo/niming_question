@@ -7,9 +7,6 @@
         <div>
           <div>
             我的
-            <!-- <div class="avatarBox">
-              <img :src="userInfo ? userInfo.avatarUrl : ''" />
-            </div> -->
           </div>
         </div>
       </div>
@@ -26,13 +23,21 @@
       </div>
     </div>
 
-    <div class="container" v-if="list.length > 0">
-      <!-- <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-      > -->
+    <div class="container">
+      <div class="item">
+        <div class="red"></div>
+        <div class="content">{{ example.content }}</div>
+
+        <div class="status">
+          <div class="noAnswer">
+            <div>未回答</div>
+            <div>去回答</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="container" v-if="list.length > 0">
       <div class="item" v-for="(item, index) in list" :key="index">
         <div
           class="red"
@@ -60,7 +65,6 @@
         </div>
 
         <div class="content">{{ item.text }}</div>
-        <!-- <div class="status">未回答</div> -->
         <div class="status" v-if="$store.state.activeTabbarIndex === 0">
           <div class="haveAnswer" v-if="item.have_answer">
             <span>答</span>{{ item.answer }}
@@ -88,12 +92,11 @@
           <div class="haveAnswer"><span>答</span>{{ item.answer }}</div>
         </div>
       </div>
-      <!-- </van-list> -->
-    </div>
+    </div> -->
 
-    <div class="nothing" v-else>
+    <!-- <div class="nothing" v-else>
       <img src="@/assets/v2_qkcfa2.png" />
-    </div>
+    </div> -->
 
     <!-- 底部分享按钮 -->
     <div class="footerBtn">
@@ -154,13 +157,13 @@
         <div>请在微信中打开</div>
         <div class="item">
           <div class="title">方式一 <br />保存下方二维码，扫码进入</div>
-          <img src="@/assets/v2_qmi97e.png" />
+          <img src="@/assets/20210128165956.png" />
         </div>
         <div class="item">
           <div class="title">方式二 <br />保存下方二维码，扫码进入</div>
           <div class="link">
             <span ref="copyContainer"
-              >http://anonymous.taodaibuy.com/niming_question</span
+              >http://anonymous.taodaibuy.com/niming_question?isnew=1</span
             >
           </div>
           <div
@@ -172,7 +175,9 @@
         </div>
 
         <div class="item">
-          <div class="title">方式三 <br />搜索公众号“朋友提问箱Pro”获取入口</div>
+          <div class="title">
+            方式三 <br />搜索公众号“朋友提问箱Pro”获取入口
+          </div>
         </div>
       </div>
     </div>
@@ -182,6 +187,7 @@
 <script>
 // @ is an alias to /src
 import wx from "weixin-js-sdk";
+import { getExample } from "@/api/api";
 import { getUrlCode } from "@/utils/index.js";
 import {
   getReceiveQuestion,
@@ -220,6 +226,7 @@ export default {
       page_index: 0,
       // showDialog: "",
       showDialog: false,
+      example: {},
     };
   },
 
@@ -286,6 +293,8 @@ export default {
   // },
 
   async created() {
+    const res = await getExample();
+    this.example = res.data;
     //根据store的状态判断是否第一次进入，首次进入显示入场动画
   },
 
@@ -293,7 +302,7 @@ export default {
     onCopy() {
       let container = this.$refs.copyContainer;
       this.$copyText(
-        "http://anonymous.taodaibuy.com/niming_question",
+        "http://anonymous.taodaibuy.com/niming_question?isnew=1",
         container
       );
       this.$Notify({ type: "success", message: "复制成功" });

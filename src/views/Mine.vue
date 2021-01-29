@@ -280,7 +280,7 @@ export default {
     this.getWxConfig();
     this.getUserInfo();
     await this.getAdminStatus();
-    this.first_login = localStorage.getItem("first_login");
+    this.first_login = localStorage.getItem("question_first_login");
   },
   methods: {
     getFocus() {

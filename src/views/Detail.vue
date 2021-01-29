@@ -178,6 +178,7 @@ export default {
           //设置uid和session到localstorage并用返回到的session继续请求
           localStorage.setItem("question_session", result.data.session);
           localStorage.setItem("question_uid", result.data.uid);
+          localStorage.setItem("question_first_login", result.data.first_login);
           this.getDataDetail(this.$route.query.qid, result.data.session);
           this.readLetter(result.data.session);
           this.getWxConfig(result.data.session);

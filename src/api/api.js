@@ -9,9 +9,9 @@ import request from '@/api/request'
  */
 
 // ## 非静默授权
-export function login(code) {
+export function login(data) {
     return request({
-        url: '/user/login?code=' + code,
+        url: '/user/login?code=' + data.code +'&isNew='+data.isNew,
         method: 'get',
     })
 }
@@ -423,6 +423,13 @@ export function updatePhone(data) {
     })
 }
 
+//获取实例文案
+export function getExample() {
+    return request({
+        url: '/social/get_example',
+        method: 'post',
+    })
+}
 
 
 
