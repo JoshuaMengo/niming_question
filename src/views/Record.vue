@@ -7,27 +7,33 @@
     </div>
     <div class="recordList" v-show="userInfo.nickName">
       <div class="record_iem" v-for="(item, index) in list" :key="index">
-        <div><img :class="userInfo.is_lock ? 'isLock':''" :src="item.avatarUrl" /></div>
+        <div>
+          <img
+            :class="userInfo.is_lock ? 'isLock' : ''"
+            :src="item.avatarUrl"
+          />
+        </div>
         <div>{{ userInfo.is_lock ? "解锁后可查看" : item.nickName }}</div>
         <div>访问{{ item.watch_time }}次</div>
       </div>
     </div>
 
-    <div class="footer" v-show="userInfo.nickName">
-      <div v-show="userInfo.is_lock" @click="showDialog = 'pay'">解锁查看</div>
+    <div class="footer" v-show="userInfo.is_lock">
+      <div  @click="showDialog = 'pay'">解锁查看</div>
     </div>
 
     <div class="dialog" @click="showDialog = ''" v-show="showDialog === 'pay'">
       <div class="content" @click.stop="">
         <div>谁看过我</div>
         <div class="operation_container">
-          <div @click="pay({ fee: 200, body: 'once' })">
+          <div @click="pay({ fee: 288, body: 'once' })">
             <div><img src="@/assets/v2_qkccl0 .png" />偷看一次</div>
-            <div>￥<span>2</span></div>
+            <div>￥<span>2.88</span></div>
           </div>
-          <div @click="pay({ fee: 1500, body: 'vip' })">
+          <div @click="pay({ fee: 1800, body: 'vip' })">
             <div><img src="@/assets/v2_qkccl8.png" />永久解锁</div>
-            <div>￥<span>15</span><del>￥30</del></div>
+            <div>￥<span>18</span><del>￥36</del></div>
+            <img src="@/assets/v2_qiyfv6.png" />
           </div>
         </div>
         <div class="tips">
@@ -56,17 +62,16 @@ export default {
       gobacktext: "<返回",
       list: [],
       showDialog: "",
-      userInfo:{
-        is_lock:true
-      }
+      userInfo: {
+        is_lock: true,
+      },
     };
   },
   async created() {
     await this.getList();
     await this.getUserInfo();
-    
-    this.getWxConfig();
 
+    this.getWxConfig();
   },
   methods: {
     async getUserInfo() {
@@ -246,14 +251,23 @@ html {
           flex-direction: column;
           align-items: center;
           justify-content: space-around;
+          position: relative;
           & > div:nth-child(1) {
             display: flex;
             align-items: center;
-            img {
+            & > img {
               width: 18px;
               height: 18px;
               margin-right: 3px;
             }
+          }
+          & > img {
+            height: 25px;
+            width: 55px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translateY(-50%);
           }
           span {
             font-weight: bold;
@@ -303,7 +317,7 @@ html {
     }
   }
   & > .recordList {
-    padding: 0 20px;
+    padding: 0 20px 50px;
     & > .record_iem {
       height: 70px;
       display: flex;
@@ -324,7 +338,7 @@ html {
           height: 100%;
           width: 100%;
         }
-        .isLock{
+        .isLock {
           filter: grayscale(100%) blur(7px);
         }
       }

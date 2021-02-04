@@ -160,8 +160,8 @@
             >
               <wx-open-launch-weapp
                 id="launch-btn"
-                username="gh_a890d79ff3bc"
-                path="pages/web_view/web_view.html?url=https://mp.weixin.qq.com/s/_ra_ftuFDiV0Oim64720VQ"
+                username="gh_1eeeae8628d0"
+                path="pages/webview/webview?id=2"
               >
                 <script type="text/wxtag-template">
                           <style>
@@ -177,8 +177,8 @@
                               border-radius: 8px;
                            }
                            .text{
-                             font-size: 15px;
-                              font-weight: bold;
+                             font-size: 14px;
+                            font-weight: bold;
                            }
                           </style>
                   <div class="btn">
@@ -717,9 +717,8 @@ export default {
         flex: 1;
         & > .question {
           position: relative;
-          &>.img{
+          & > .img {
             z-index: 999;
-
           }
         }
         & > div {
