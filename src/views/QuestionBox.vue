@@ -83,9 +83,9 @@
     <div class="footer">
       <div><img src="@/assets/201215165630.png" /> 更多好玩</div>
       <div>
-        <span>朋友默契测试</span>
-        <span>朋友圈红包</span>
-        <span>匿名提问箱</span>
+        <a href="http://nim.lodidc.cn/friendtest"><span>朋友默契测试</span></a>
+        <a href="http://newyear.lodidc.cn/newyear"><span>朋友圈红包</span></a>
+        <a href="http://anonymous.taodaibuy.com/niming_letter/home"><span>匿名信箱</span></a>
       </div>
     </div>
 

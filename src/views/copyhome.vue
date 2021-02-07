@@ -173,12 +173,6 @@
             一键复制
           </div>
         </div>
-
-        <div class="item">
-          <div class="title">
-            方式三 <br />搜索公众号“朋友提问箱Pro”获取入口
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -496,8 +490,8 @@ export default {
       color: black;
       background: white;
       width: 305px;
-      height: 511px;
       border-radius: 10px;
+      padding-bottom: 20px;
       & > div:nth-child(1) {
         font-size: 15px;
         font-weight: bold;

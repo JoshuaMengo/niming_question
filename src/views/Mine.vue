@@ -451,6 +451,7 @@ export default {
     display: flex;
     flex-direction: column;
     color: white;
+    z-index:999;
   }
   .dialog {
     background: rgba(0, 0, 0, 0.65);
