@@ -242,8 +242,19 @@ export function getFeedback(data) {
         url: '/wxpay/get_feedback?session=' + data.session,
         method: 'post',
         data: {
-            uid: data.uid
+            fid: data.fid
         }
+    })
+}
+
+export function searchUser(data){
+    return request({
+        url:'/wxpay/search_user?session='+data.session,
+        method:'post',
+        data:{
+            uid:data.uid,
+        }
+        
     })
 }
 

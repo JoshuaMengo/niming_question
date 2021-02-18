@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import 'lib-flexible/flexible'
-import { Checkbox,Field,Loading, Button ,CheckboxGroup, Uploader, Notify, Dialog,List } from 'vant';
+import { Checkbox,Field,Loading, Button ,ImagePreview,CheckboxGroup, Uploader, Notify, Dialog,List } from 'vant';
 Vue.config.productionTip = false
 Vue.use(Field);
 Vue.use(Dialog);
@@ -18,6 +18,7 @@ Vue.use(List);
 Vue.use(Loading);
 
 
+Vue.prototype.$ImagePreview = ImagePreview
 Vue.prototype.$Dialog = Dialog
 Vue.prototype.$Notify = Notify
 Vue.config.ignoredElements = ['wx-open-launch-weapp']

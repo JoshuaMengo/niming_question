@@ -5,7 +5,7 @@
     </div>
 
     <div class="input_container">
-      <input v-model="fid" />
+      <input v-model="uid" />
       <div class="commit_btn" @click="getFb()">确定</div>
     </div>
 
@@ -37,34 +37,41 @@
 </template>
 
 <script>
-import { getFeedback, handleFeedback } from "@/api/api";
+import { getFeedback, handleFeedback,searchUser } from "@/api/api";
 export default {
   data() {
     return {
       fid: "",
       detailData: {},
       gobacktext: "<返回",
+      uid:''
     };
   },
   
   mounted() {
     if (this.$route.query.fid) {
       this.fid = this.$route.query.fid;
-      this.getFb();
+      let data={
+        session:localStorage.getItem("question_session"),
+        fid: this.fid,
+      }
+      getFeedback(data).then(res=>{
+        this.detailData = res.data;
+      })
     }
   },
   created() {},
   methods: {
     getFb() {
-      if (this.fid + "" === "") {
+      if (this.uid + "" === "") {
         this.$Notify({ type: "warning", message: "请输入查询的id" });
         return;
       }
       let data = {
         session: localStorage.getItem("question_session"),
-        uid: this.fid,
+        uid: this.uid,
       };
-      getFeedback(data).then((res) => {
+      searchUser(data).then((res) => {
         console.log(res);
         this.detailData = res.data;
       });
@@ -88,6 +95,7 @@ export default {
             uid: that.detailData.uid,
             fid: that.detailData.fid,
             flag: flag,
+            session:localStorage.getItem('question_session')
           };
           handleFeedback(data).then((res) => {
             console.log(res);
